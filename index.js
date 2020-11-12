@@ -28,14 +28,29 @@ const server = http.createServer((req, res) => {
 
     // Get the payload - utf-8 is standard for json strings
     const decoder = new StringDecoder("utf-8");
-
-    // Send the response
-    res.end("hello world \n");
-
-    // Log what path was requested
-    console.log("request headers: \n\r", headers);
-
     
+    // Payloads like json come in as a stream.
+    // We are going to build up the stream in a buffer as it enters the request.
+    let buffer = '';
+
+    // Will only be called if a payload is sent
+    req.on('data', (data) => {
+        // As data streams in undecoded we use the decoder set to utf-8 to decode the
+        // data steam and append it to the buffer.
+        buffer += decoder.write(data);
+    });
+
+    // The end event will always be called once the request is completed.
+    req.on('end', () => {
+        buffer += decoder.end();
+
+        // Send the response
+        res.end("hello world \n");
+
+        // Log what path was requested
+        console.log("request payload: \n\r", buffer);
+    });
+
 });
 
 // Start the server and that is should listen on port 3000
