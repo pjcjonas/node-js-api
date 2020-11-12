@@ -5,6 +5,7 @@
 // Dependencies
 const http = require("http");
 const url = require("url");
+const StringDecoder = require("string_decoder").StringDecoder;
 
 // The server should respond to all requests
 const server = http.createServer((req, res) => {
@@ -16,9 +17,6 @@ const server = http.createServer((req, res) => {
     const path = parsedUrl.pathname;
     const trimmedPath = path.replace(/^\/+|\/+$/g, ''); // This removes all trailing slashes
 
-    // Send the response
-    res.end("hello world \n");
-
     // Get the request Method
     const method = req.method.toLowerCase();
 
@@ -27,6 +25,12 @@ const server = http.createServer((req, res) => {
 
     // Get the headers as an object
     const headers = req.headers;
+
+    // Get the payload - utf-8 is standard for json strings
+    const decoder = new StringDecoder("utf-8");
+
+    // Send the response
+    res.end("hello world \n");
 
     // Log what path was requested
     console.log("request headers: \n\r", headers);
