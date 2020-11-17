@@ -4,12 +4,41 @@
 
 // Dependencies
 const http = require("http");
+const https = require("https");
 const url = require("url");
 const config = require("./config");
 const StringDecoder = require("string_decoder").StringDecoder;
+const fs = require('fs');
 
-// The server should respond to all requests
-const server = http.createServer((req, res) => {
+// Instantiating the HTTP server
+const httpServer = http.createServer((req, res) => {
+    unifiedServer(req, res);
+});
+
+// Start HTTPS server
+httpServer.listen(config.httpPort, () => {
+    console.log("The server is listening on Port " + config.httpPort + " in " + config.envName + " Now");
+});
+
+// Instantiating the HTTPS server
+const httpsServerOptions = {
+    key: fs.readFileSync('./https/key.pem'),
+    cert: fs.readFileSync('./https/cert.pem')
+};
+
+// Start HTTPS server
+const httpsServer = https.createServer(httpsServerOptions,(req, res) => {
+    unifiedServer(req, res);
+});
+
+
+// Start the server and that is should listen on port 3000
+httpsServer.listen(config.httpsPort, () => {
+    console.log("The server is listening on Port " + config.httpsPort + " in " + config.envName + " Now");
+});
+
+
+const unifiedServer = (req, res) => {
     // Get the url and parse it
     const parsedUrl = url.parse(req.url, true);
     
@@ -79,32 +108,29 @@ const server = http.createServer((req, res) => {
         });
         
     });
-
-});
-
-// Start the server and that is should listen on port 3000
-server.listen(config.port, () => {
-    console.log("The server is listening on Port " + config.port + " in " + config.envName + " Now");
-});
-
+}
 
 // Define Handlers
 let handlers = {};
 
-// Sample Handler
-handlers.sample = (data, callback) => {
-    // callback http status code and payload object
-    callback(406, {name:"sample handler"});
+// Ping Handler
+handlers.ping = (data, callback) => {
+    callback(200);
+}
+
+handlers.hello = (data, callback) => {
+    callback(200, {message:"Welcome to the jungle"});
 }
 
 // Not found Handler
 handlers.notfound = (data, callback) => {
     // callback http status code and payload object
     callback(404);
-
 }
+
 
 // Define new request router
 const router = {
-    'sample': handlers.sample
+    'ping': handlers.ping,
+    'hello': handlers.hello
 };
