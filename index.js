@@ -9,6 +9,13 @@ const url = require("url");
 const config = require("./config");
 const StringDecoder = require("string_decoder").StringDecoder;
 const fs = require('fs');
+const _data = require('./lib/data');
+
+// Testing
+// @TODO delete this
+_data.create('test', 'newFile', {name: 'philip'}, (err) => {
+    console.log("Write File Test: ", err);
+})
 
 // Instantiating the HTTP server
 const httpServer = http.createServer((req, res) => {
