@@ -7,14 +7,16 @@ const environments = {};
 environments.staging = {
     httpPort: 3000,
     httpsPort: 3001,
-    envName: 'staging'
+    envName: 'staging',
+    hasingSecret: 'thisisasecret'
 };
 
 // Production object
 environments.production = {
     httpPort: 5000,
     httpsPort: 5001,
-    envName: 'production'
+    envName: 'production',
+    hasingSecret: 'thisisalsoasecret'
 };
 
 // Determine which env to export

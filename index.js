@@ -9,6 +9,7 @@ const url = require("url");
 const config = require("./config");
 const StringDecoder = require("string_decoder").StringDecoder;
 const fs = require('fs');
+const handlers = require("./lib/handlers")
 
 // Instantiating the HTTP server
 const httpServer = http.createServer((req, res) => {
@@ -110,23 +111,7 @@ const unifiedServer = (req, res) => {
     });
 }
 
-// Define Handlers
-let handlers = {};
 
-// Ping Handler
-handlers.ping = (data, callback) => {
-    callback(200);
-}
-
-handlers.hello = (data, callback) => {
-    callback(200, {message:"Welcome to the jungle"});
-}
-
-// Not found Handler
-handlers.notfound = (data, callback) => {
-    // callback http status code and payload object
-    callback(404);
-}
 
 
 // Define new request router
